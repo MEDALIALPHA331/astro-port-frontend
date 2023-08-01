@@ -1,0 +1,24 @@
+---
+import { useSanityClient } from 'astro-sanity';
+import type { Post } from './post';
+import PortableText from '../../components/PortableText.astro';
+
+export async function getStaticPaths() {
+  const posts = await useSanityClient().fetch(`*[_type == "post"]`);
+
+  return posts.map((post: Post) => {
+    return {
+      params: {
+        slug: post.slug?.current || '',
+      },
+      props: { ...post },
+    };
+  })
+}
+
+const { mainImage, body, title } = Astro.props;
+---
+
+<h1>{title}</h1>
+
+<PortableText portableText={body} />
